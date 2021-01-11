@@ -1,23 +1,13 @@
 syntax = "proto3";
 
-package account;
+package grocery;
 
-option go_package = "proto;account";
+option go_package = "proto;grocery";
 
-service Account {
+service Grocery {
 	rpc Call(Request) returns (Response) {}
 	rpc Stream(StreamingRequest) returns (stream StreamingResponse) {}
 	rpc PingPong(stream Ping) returns (stream Pong) {}
-	rpc Authenticate(Account) returns (JWToken) {}
-}
-
-message Account {
-	string email = 1;
-	string password = 2;
-}
-
-message JWToken {
-	string token = 1;
 }
 
 message Message {

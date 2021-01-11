@@ -4,11 +4,16 @@ import (
 	"context"
 
 	log "github.com/micro/micro/v3/service/logger"
+	"gorm.io/gorm"
 
 	account "account/proto"
 )
 
-type Account struct{}
+type Account struct {
+	gorm.Model
+	email    string
+	hashedPassword string
+}
 
 // Call is a single request handler called via client.Call or the generated client code
 func (e *Account) Call(ctx context.Context, req *account.Request, rsp *account.Response) error {
@@ -46,3 +51,5 @@ func (e *Account) PingPong(ctx context.Context, stream account.Account_PingPongS
 		}
 	}
 }
+
+func (acc *Account) Authenticate(ctx context.Context, account.Account)
