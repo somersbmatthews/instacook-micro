@@ -9,9 +9,9 @@ import (
 
 const database = "instacook.db"
 
-type AccountSchema {
+type AccountSchema struct {
 	gorm.Model
-	email string
+	email          string
 	hashedPassword string
 }
 
@@ -21,11 +21,12 @@ func init() {
 		errMsg := fmt.Sprintf("failed to connect to database %s: %v", database, err)
 		panic(errMsg)
 	}
-	db.AutoMigrate(&AccountSchema)
+	db.AutoMigrate(&AccountSchema{})
 }
 
-func Create(acc *handler.Account) err {
-
+func Create(acc *AccountSchema) error {
+	db, err := gorm.Open(postgres.Open(database), &gorm.Config{})
 	db.Create(acc)
+	return err
 
 }
