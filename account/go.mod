@@ -1,9 +1,9 @@
-module account
+module github.com/somersbmatthews/account
 
 go 1.15
 
 require (
-	github.com/golang/protobuf v1.4.3
+	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
 	github.com/micro/micro/v3 v3.0.4
 	github.com/soheilhy/cmux v0.1.4 // indirect

@@ -10,9 +10,8 @@ import (
 )
 
 type Account struct {
-	gorm.Model
 	email    string
-	hashedPassword string
+	Password string
 }
 
 // Call is a single request handler called via client.Call or the generated client code
