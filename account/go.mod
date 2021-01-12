@@ -1,4 +1,4 @@
-module github.com/somersbmatthews/account
+module account
 
 go 1.15
 
