@@ -8,16 +8,24 @@ service Account {
 	rpc Call(Request) returns (Response) {}
 	rpc Stream(StreamingRequest) returns (stream StreamingResponse) {}
 	rpc PingPong(stream Ping) returns (stream Pong) {}
-	rpc Authenticate(Account) returns (JWToken) {}
+	rpc Register(AccountInfo) returns (AccountResponse) {}
+	rpc Authenticate(AccountInfo) returns (AccountResponse) {}
+	rpc UpdateAccount(NewAccountInfo) returns (AccountResponse) {}
 }
 
-message Account {
+message AccountInfo {
 	string email = 1;
 	string password = 2;
 }
 
-message JWToken {
-	string token = 1;
+message NewAccountInfo {
+	string email = 1;
+	string password = 2;
+}
+
+message AccountResponse {
+	uint32 statusCode = 1;
+	string JWTtoken = 2;
 }
 
 message Message {

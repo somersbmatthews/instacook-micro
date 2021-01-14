@@ -45,6 +45,9 @@ type AccountService interface {
 	Call(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	Stream(ctx context.Context, in *StreamingRequest, opts ...client.CallOption) (Account_StreamService, error)
 	PingPong(ctx context.Context, opts ...client.CallOption) (Account_PingPongService, error)
+	Register(ctx context.Context, in *AccountInfo, opts ...client.CallOption) (*AccountResponse, error)
+	Authenticate(ctx context.Context, in *AccountInfo, opts ...client.CallOption) (*AccountResponse, error)
+	UpdateAccount(ctx context.Context, in *NewAccountInfo, opts ...client.CallOption) (*AccountResponse, error)
 }
 
 type accountService struct {
@@ -169,12 +172,45 @@ func (x *accountServicePingPong) Recv() (*Pong, error) {
 	return m, nil
 }
 
+func (c *accountService) Register(ctx context.Context, in *AccountInfo, opts ...client.CallOption) (*AccountResponse, error) {
+	req := c.c.NewRequest(c.name, "Account.Register", in)
+	out := new(AccountResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountService) Authenticate(ctx context.Context, in *AccountInfo, opts ...client.CallOption) (*AccountResponse, error) {
+	req := c.c.NewRequest(c.name, "Account.Authenticate", in)
+	out := new(AccountResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountService) UpdateAccount(ctx context.Context, in *NewAccountInfo, opts ...client.CallOption) (*AccountResponse, error) {
+	req := c.c.NewRequest(c.name, "Account.UpdateAccount", in)
+	out := new(AccountResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Account service
 
 type AccountHandler interface {
 	Call(context.Context, *Request, *Response) error
 	Stream(context.Context, *StreamingRequest, Account_StreamStream) error
 	PingPong(context.Context, Account_PingPongStream) error
+	Register(context.Context, *AccountInfo, *AccountResponse) error
+	Authenticate(context.Context, *AccountInfo, *AccountResponse) error
+	UpdateAccount(context.Context, *NewAccountInfo, *AccountResponse) error
 }
 
 func RegisterAccountHandler(s server.Server, hdlr AccountHandler, opts ...server.HandlerOption) error {
@@ -182,6 +218,9 @@ func RegisterAccountHandler(s server.Server, hdlr AccountHandler, opts ...server
 		Call(ctx context.Context, in *Request, out *Response) error
 		Stream(ctx context.Context, stream server.Stream) error
 		PingPong(ctx context.Context, stream server.Stream) error
+		Register(ctx context.Context, in *AccountInfo, out *AccountResponse) error
+		Authenticate(ctx context.Context, in *AccountInfo, out *AccountResponse) error
+		UpdateAccount(ctx context.Context, in *NewAccountInfo, out *AccountResponse) error
 	}
 	type Account struct {
 		account
@@ -281,4 +320,16 @@ func (x *accountPingPongStream) Recv() (*Ping, error) {
 		return nil, err
 	}
 	return m, nil
+}
+
+func (h *accountHandler) Register(ctx context.Context, in *AccountInfo, out *AccountResponse) error {
+	return h.AccountHandler.Register(ctx, in, out)
+}
+
+func (h *accountHandler) Authenticate(ctx context.Context, in *AccountInfo, out *AccountResponse) error {
+	return h.AccountHandler.Authenticate(ctx, in, out)
+}
+
+func (h *accountHandler) UpdateAccount(ctx context.Context, in *NewAccountInfo, out *AccountResponse) error {
+	return h.AccountHandler.UpdateAccount(ctx, in, out)
 }

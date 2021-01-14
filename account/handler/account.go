@@ -1,17 +1,24 @@
 package handler
 
 import (
+	// "google.golang.org/grpc/status"
 	"context"
 
 	log "github.com/micro/micro/v3/service/logger"
-	"gorm.io/gorm"
 
 	account "account/proto"
+	"account/redis"
 )
 
 type Account struct {
 	email    string
-	Password string
+	password string
+}
+
+var redisClient = redis.Client{}
+
+func newAccount() *Account {
+	return &Account{}
 }
 
 // Call is a single request handler called via client.Call or the generated client code
@@ -51,4 +58,34 @@ func (e *Account) PingPong(ctx context.Context, stream account.Account_PingPongS
 	}
 }
 
-func (acc *Account) Authenticate(ctx context.Context, account.Account)
+func (e *Account) Register(ctx context.Context, req account.AccountInfo, res account.AccountResponse) error {
+	schema := newSchema()
+	accountSchema.Create(schema, ctx, e)
+	return nil
+}
+
+func (e *Account) Authenticate(ctx context.Context, req account.AccountInfo, res account.AccountResponse) error {
+	schema := newSchema()
+	accountSchema.Find(schema, ctx, e)
+	return nil
+}
+
+func (e *Account) UpdateAccount(ctx context.Context, old account.AccountInfo, new account.NewAccountInfo, res account.AccountResponse) error {
+	schema := newSchema()
+	// oldAccount := newAccount()
+	oldAccount := &Account{
+		email:    old.Email,
+		password: old.Password,
+	}
+
+	newAccount := &Account{
+		email:    new.Email,
+		password: new.Password,
+	}
+	err := accountSchema.Update(schema, ctx, oldAccount, newAccount)
+	if err != nil {
+		return err
+
+	}
+	return nil
+}
