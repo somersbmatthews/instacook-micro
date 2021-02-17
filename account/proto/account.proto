@@ -19,6 +19,12 @@ message AccountInfo {
 }
 
 message NewAccountInfo {
+	string accountID = 1;
+	string email = 2;
+	string password = 3;
+}
+
+message OldAccountInfo {
 	string email = 1;
 	string password = 2;
 }

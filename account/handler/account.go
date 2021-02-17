@@ -4,6 +4,7 @@ import (
 	// "google.golang.org/grpc/status"
 	"context"
 
+	"github.com/google/uuid"
 	log "github.com/micro/micro/v3/service/logger"
 
 	account "account/proto"
@@ -58,34 +59,47 @@ func (e *Account) PingPong(ctx context.Context, stream account.Account_PingPongS
 	}
 }
 
-func (e *Account) Register(ctx context.Context, req account.AccountInfo, res account.AccountResponse) error {
+func (e *Account) Register(ctx context.Context, req *account.AccountInfo, res *account.AccountResponse) error {
 	schema := newSchema()
-	accountSchema.Create(schema, ctx, e)
-	return nil
-}
+	e.email = req.Email
+	e.password = req.Password
+	AccountSchema.Create(schema, ctx, e)
 
-func (e *Account) Authenticate(ctx context.Context, req account.AccountInfo, res account.AccountResponse) error {
-	schema := newSchema()
-	accountSchema.Find(schema, ctx, e)
-	return nil
-}
-
-func (e *Account) UpdateAccount(ctx context.Context, old account.AccountInfo, new account.NewAccountInfo, res account.AccountResponse) error {
-	schema := newSchema()
-	// oldAccount := newAccount()
-	oldAccount := &Account{
-		email:    old.Email,
-		password: old.Password,
-	}
-
-	newAccount := &Account{
-		email:    new.Email,
-		password: new.Password,
-	}
-	err := accountSchema.Update(schema, ctx, oldAccount, newAccount)
+	uuid, err := uuid.NewRandom()
 	if err != nil {
-		return err
-
+		log.Fatal(err)
 	}
+
+	JWT, err := NewJWT(userID)
+
+	// TODO: finish
+
+	return nil
+}
+
+func (e *Account) Authenticate(ctx context.Context, req *account.AccountInfo, res *account.AccountResponse) error {
+	schema := newSchema()
+	// TODO: finish
+	AccountSchema.Find(schema, ctx, e)
+	return nil
+}
+
+func (e *Account) UpdateAccount(ctx context.Context, new *account.NewAccountInfo, res *account.AccountResponse) error {
+	// schema := newSchema()
+	// oldAccount := newAccount()
+	// oldAccount := &Account{
+	// 	email:    old.Email,
+	// 	password: old.Password,
+	// }
+
+	// newAccount := &Account{
+	// 	email:    new.Email,
+	// 	password: new.Password,
+	// }
+	// err := accountSchema.Update(schema, ctx, oldAccount, newAccount)
+	// if err != nil {
+	// 	return err
+
+	// }
 	return nil
 }

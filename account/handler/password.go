@@ -8,11 +8,10 @@ import (
 
 func hashAndSalt(pwd string) string {
 	bytePwd := []byte(pwd)
-	hash, err := bcrypt.GenerateFromPassword(bytePwd, bcrypt.MinCost)
+	hash, err := bcrypt.GenerateFromPassword(bytePwd, bcrypt.DefaultCost)
 	if err != nil {
 		log.Println(err)
 	}
-
 	return string(hash)
 }
 
